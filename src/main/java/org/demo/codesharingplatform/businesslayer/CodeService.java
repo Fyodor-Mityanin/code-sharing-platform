@@ -1,5 +1,6 @@
 package org.demo.codesharingplatform.businesslayer;
 
+import org.demo.codesharingplatform.entity.Code;
 import org.demo.codesharingplatform.persistence.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,15 @@ public class CodeService {
         this.codeRepository = codeRepository;
     }
 
-    public CodeEntity findCodeById(Long id) {
+    public Code findCodeById(Long id) {
         return  codeRepository.findCodeById(id);
     }
 
-    public List<CodeEntity> findLastTen() {
+    public List<Code> findLastTen() {
         return  codeRepository.findFirst10ByOrderByDateDesc();
     }
 
-    public CodeEntity save(CodeEntity code) {
+    public Code save(Code code) {
         code.setDate(LocalDateTime.now());
         return codeRepository.save(code);
     }

@@ -1,6 +1,6 @@
 package org.demo.codesharingplatform.presentation;
 
-import org.demo.codesharingplatform.businesslayer.CodeEntity;
+import org.demo.codesharingplatform.entity.Code;
 import org.demo.codesharingplatform.businesslayer.CodeService;
 import org.demo.codesharingplatform.dtos.CodeDTO;
 import org.demo.codesharingplatform.dtos.mapper.CodeMapper;
@@ -23,7 +23,7 @@ public class CodeController {
 
     @GetMapping("/code/{id}")
     public String code(@PathVariable Long id, Model model) {
-        CodeEntity code = codeService.findCodeById(id);
+        Code code = codeService.findCodeById(id);
         model.addAttribute("code", code);
         model.addAttribute("title", "Code");
         return "code";
@@ -31,7 +31,7 @@ public class CodeController {
 
     @GetMapping("/code/latest")
     public String codeLatest(Model model) {
-        List<CodeEntity> codeList = codeService.findLastTen();
+        List<Code> codeList = codeService.findLastTen();
         model.addAttribute("codeList", codeList);
         model.addAttribute("title", "Latest");
         return "codeList";
@@ -39,7 +39,7 @@ public class CodeController {
 
     @GetMapping("/api/code/latest")
     public ResponseEntity<List<CodeDTO>> apiCodeLatest() {
-        List<CodeEntity> codeList = codeService.findLastTen();
+        List<Code> codeList = codeService.findLastTen();
         List<CodeDTO> codeDTOs = CodeMapper.entitiesToDTOs(codeList);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
@@ -50,7 +50,7 @@ public class CodeController {
 
     @GetMapping("/api/code/{id}")
     public ResponseEntity<CodeDTO> apiCode(@PathVariable Long id) {
-        CodeEntity code = codeService.findCodeById(id);
+        Code code = codeService.findCodeById(id);
         CodeDTO codeDTO = CodeMapper.entityToDTO(code);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
@@ -60,8 +60,8 @@ public class CodeController {
     }
 
     @PostMapping(value = "/api/code/new")
-    public ResponseEntity<String> apiCodeNew(@RequestBody CodeEntity code) {
-        CodeEntity codeToSave = codeService.save(code);
+    public ResponseEntity<String> apiCodeNew(@RequestBody Code code) {
+        Code codeToSave = codeService.save(code);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
         return ResponseEntity.ok()
