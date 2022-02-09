@@ -5,13 +5,12 @@ import org.demo.codesharingplatform.businesslayer.CodeService;
 import org.demo.codesharingplatform.dtos.CodeDTO;
 import org.demo.codesharingplatform.dtos.mapper.CodeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+
 
 import java.util.List;
 import java.util.UUID;
