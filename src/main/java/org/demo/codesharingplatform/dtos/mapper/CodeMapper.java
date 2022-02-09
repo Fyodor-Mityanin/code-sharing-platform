@@ -10,11 +10,17 @@ import java.util.List;
 @Service
 public class CodeMapper {
 
-    public static CodeDTO entityToDTO (Code code) {
-        return new CodeDTO(code.getDate().toString(), code.getCode());
+    public CodeDTO entityToDTO (Code code) {
+
+        return new CodeDTO(
+                code.getDate().toString(),
+                code.getCode(),
+                (int) code.getTime().getSeconds(),
+                code.getViews()
+                );
     }
 
-    public static List<CodeDTO> entitiesToDTOs (List<Code> codeList) {
+    public List<CodeDTO> entitiesToDTOs (List<Code> codeList) {
         List<CodeDTO> codeDTOs = new ArrayList<>();
         for (Code code: codeList) {
             CodeDTO dto = entityToDTO(code);

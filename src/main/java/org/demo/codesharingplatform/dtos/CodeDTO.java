@@ -1,17 +1,18 @@
 package org.demo.codesharingplatform.dtos;
 
-
-import java.time.LocalDateTime;
-
 public class CodeDTO {
 
     private String date;
-
     private String code;
+    private Integer time;
+    private Integer views;
 
-    public CodeDTO(String date, String code) {
+
+    public CodeDTO(String date, String code, Integer time, Integer views) {
         this.date = date;
         this.code = code;
+        this.time = time;
+        this.views = views;
     }
 
     public String getDate() {
@@ -28,5 +29,21 @@ public class CodeDTO {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
     }
 }

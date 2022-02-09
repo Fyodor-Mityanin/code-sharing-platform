@@ -5,25 +5,33 @@ import org.demo.codesharingplatform.businesslayer.CodeService;
 import org.demo.codesharingplatform.dtos.CodeDTO;
 import org.demo.codesharingplatform.dtos.mapper.CodeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Controller
 public class CodeController {
-    private static final String DATE_FORMATTER= "yyyy-MM-dd HH:mm:ss";
+
+    CodeService codeService;
+    CodeMapper codeMapper;
 
     @Autowired
-    CodeService codeService;
+    public CodeController(CodeService codeService, CodeMapper codeMapper) {
+        this.codeService = codeService;
+        this.codeMapper = codeMapper;
+    }
 
-    @GetMapping("/code/{id}")
-    public String code(@PathVariable Long id, Model model) {
-        Code code = codeService.findCodeById(id);
+    @GetMapping("/code/{uuid}")
+    public String code(@PathVariable UUID uuid, Model model) {
+        Code code = codeService.findCodeById(uuid);
         model.addAttribute("code", code);
         model.addAttribute("title", "Code");
         return "code";
@@ -40,7 +48,7 @@ public class CodeController {
     @GetMapping("/api/code/latest")
     public ResponseEntity<List<CodeDTO>> apiCodeLatest() {
         List<Code> codeList = codeService.findLastTen();
-        List<CodeDTO> codeDTOs = CodeMapper.entitiesToDTOs(codeList);
+        List<CodeDTO> codeDTOs = codeMapper.entitiesToDTOs(codeList);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
         return ResponseEntity.ok()
@@ -48,10 +56,17 @@ public class CodeController {
                 .body(codeDTOs);
     }
 
-    @GetMapping("/api/code/{id}")
-    public ResponseEntity<CodeDTO> apiCode(@PathVariable Long id) {
-        Code code = codeService.findCodeById(id);
-        CodeDTO codeDTO = CodeMapper.entityToDTO(code);
+    @GetMapping("/api/code/{uuid}")
+    public ResponseEntity<?> apiCode(@PathVariable UUID uuid) {
+        Code code = codeService.findCodeById(uuid);
+        if (code == null) {
+            return ResponseEntity.notFound().build();
+        }
+        boolean isAvailable = codeService.checkAvailability(code);
+        if (!isAvailable) {
+            return ResponseEntity.notFound().build();
+        }
+        CodeDTO codeDTO = codeMapper.entityToDTO(code);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
         return ResponseEntity.ok()
@@ -61,6 +76,7 @@ public class CodeController {
 
     @PostMapping(value = "/api/code/new")
     public ResponseEntity<String> apiCodeNew(@RequestBody Code code) {
+        codeService.setIsSecret(code);
         Code codeToSave = codeService.save(code);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");

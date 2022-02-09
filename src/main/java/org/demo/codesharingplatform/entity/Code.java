@@ -1,17 +1,26 @@
 package org.demo.codesharingplatform.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Entity
 @Table(name = "code")
 public class Code {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "date")
     private LocalDateTime date;
@@ -19,51 +28,47 @@ public class Code {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "time_to_live")
-    private Duration timeToLive;
+    @Column(name = "time")
+    private Duration time = Duration.ZERO;
 
-    @Column(name = "views_left")
-    private Integer viewsLeft;
+    @Column(name = "views")
+    private int views = 0;
+
+    @JsonIgnore
+    @Column(name = "is_secret")
+    private boolean isSecret = false;
 
 
     public Code() {
     }
 
-    public Code(Long id, LocalDateTime date, String code) {
-        this.id = id;
+    public Code(LocalDateTime date, String code) {
         this.date = date;
         this.code = code;
     }
 
-    public Code(Long id, LocalDateTime date, String code, Duration secondsToLive, Integer viewsLeft) {
-        this.id = id;
+    public Code(LocalDateTime date, String code, Duration time, int views) {
         this.date = date;
         this.code = code;
-        this.timeToLive = secondsToLive;
-        this.viewsLeft = viewsLeft;
+        this.time = time;
+        this.views = views;
     }
 
-    public Code(Long id, LocalDateTime date, String code, Duration secondsToLive) {
-        this.id = id;
+    public Code(LocalDateTime date, String code, Duration time) {
         this.date = date;
         this.code = code;
-        this.timeToLive = secondsToLive;
+        this.time = time;
     }
 
-    public Code(Long id, LocalDateTime date, String code, Integer viewsLeft) {
-        this.id = id;
+    public Code(LocalDateTime date, String code, int views) {
         this.date = date;
         this.code = code;
-        this.viewsLeft = viewsLeft;
+        this.views = views;
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getDate() {
@@ -82,23 +87,39 @@ public class Code {
         this.code = code;
     }
 
-    public Duration getSecondsToLive() {
-        return timeToLive;
+    public Duration getTime() {
+        return time;
     }
 
-    public void setSecondsToLive(Duration secondsToLive) {
-        this.timeToLive = secondsToLive;
+    public void setTime(Duration time) {
+        this.time = time;
     }
 
-    public Integer getViewsLeft() {
-        return viewsLeft;
+    public int getViews() {
+        return views;
     }
 
-    public void setViewsLeft(Integer viewsLeft) {
-        this.viewsLeft = viewsLeft;
+    public void setViews(int views) {
+        this.views = views;
     }
 
-    public void decrementViewsLeft(Integer viewsLeft) {
-        this.viewsLeft--;
+    public void decrementViews() {
+        this.views--;
+    }
+
+    public boolean isSecret() {
+        return isSecret;
+    }
+
+    public void setSecret(boolean secret) {
+        isSecret = secret;
+    }
+
+    public LocalDateTime getEstimateTime() {
+        return getDate().plusSeconds(getTime().getSeconds());
+    }
+
+    public long getSecondsLeft() {
+        return ChronoUnit.SECONDS.between(LocalDateTime.now(), getDate().plusSeconds(getTime().getSeconds()));
     }
 }
