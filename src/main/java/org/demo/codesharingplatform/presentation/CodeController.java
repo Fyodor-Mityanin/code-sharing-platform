@@ -31,6 +31,13 @@ public class CodeController {
     @GetMapping("/code/{uuid}")
     public String code(@PathVariable UUID uuid, Model model) {
         Code code = codeService.findCodeById(uuid);
+        if (code == null) {
+            return "404";
+        }
+        boolean isAvailable = codeService.checkAvailability(code);
+        if (!isAvailable) {
+            return "404";
+        }
         model.addAttribute("code", code);
         model.addAttribute("title", "Code");
         return "code";
