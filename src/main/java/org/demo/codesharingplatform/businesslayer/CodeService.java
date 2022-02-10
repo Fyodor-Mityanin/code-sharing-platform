@@ -3,6 +3,7 @@ package org.demo.codesharingplatform.businesslayer;
 import org.demo.codesharingplatform.entity.Code;
 import org.demo.codesharingplatform.persistence.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,8 +23,8 @@ public class CodeService {
         return  codeRepository.findCodeById(uuid);
     }
 
-    public List<Code> findLastTen() {
-        return  codeRepository.findFirst10ByOrderByDateDesc();
+    public List<Code> findLastTenNotSecret() {
+        return codeRepository.findLastNotSecretPageable(PageRequest.of(0, 10));
     }
 
     public Code save(Code code) {

@@ -1,8 +1,8 @@
 package org.demo.codesharingplatform.dtos.mapper;
 
+import org.demo.codesharingplatform.dtos.CodeDTO;
 import org.demo.codesharingplatform.entity.Code;
 import org.springframework.stereotype.Service;
-import org.demo.codesharingplatform.dtos.CodeDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,21 @@ import java.util.List;
 public class CodeMapper {
 
     public CodeDTO entityToDTO (Code code) {
-
-        return new CodeDTO(
-                code.getDate().toString(),
-                code.getCode(),
-                (int) code.getTime().getSeconds(),
-                code.getViews()
-                );
+        if (code.isSecret()) {
+            return new CodeDTO(
+                    code.getDate().toString(),
+                    code.getCode(),
+                    (int) code.getSecondsLeft(),
+                    code.getViews()
+            );
+        } else {
+            return new CodeDTO(
+                    code.getDate().toString(),
+                    code.getCode(),
+                    0,
+                    0
+            );
+        }
     }
 
     public List<CodeDTO> entitiesToDTOs (List<Code> codeList) {

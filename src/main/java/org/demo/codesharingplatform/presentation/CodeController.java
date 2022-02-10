@@ -38,16 +38,16 @@ public class CodeController {
 
     @GetMapping("/code/latest")
     public String codeLatest(Model model) {
-        List<Code> codeList = codeService.findLastTen();
-        model.addAttribute("codeList", codeList);
+        List<Code> codeListNotSecret = codeService.findLastTenNotSecret();
+        model.addAttribute("codeList", codeListNotSecret);
         model.addAttribute("title", "Latest");
         return "codeList";
     }
 
     @GetMapping("/api/code/latest")
     public ResponseEntity<List<CodeDTO>> apiCodeLatest() {
-        List<Code> codeList = codeService.findLastTen();
-        List<CodeDTO> codeDTOs = codeMapper.entitiesToDTOs(codeList);
+        List<Code> codeListNotSecret = codeService.findLastTenNotSecret();
+        List<CodeDTO> codeDTOs = codeMapper.entitiesToDTOs(codeListNotSecret);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
         return ResponseEntity.ok()

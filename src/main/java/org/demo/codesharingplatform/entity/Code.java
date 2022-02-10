@@ -36,7 +36,7 @@ public class Code {
 
     @JsonIgnore
     @Column(name = "is_secret")
-    private boolean isSecret = false;
+    private boolean secret = false;
 
 
     public Code() {
@@ -108,11 +108,11 @@ public class Code {
     }
 
     public boolean isSecret() {
-        return isSecret;
+        return secret;
     }
 
     public void setSecret(boolean secret) {
-        isSecret = secret;
+        this.secret = secret;
     }
 
     public LocalDateTime getEstimateTime() {

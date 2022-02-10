@@ -13,16 +13,18 @@
 </head>
 <body>
 <#if code??>
-<span id="time_restriction">
-Seconds left: ${code.getSecondsLeft()}
-</span>
-<span id="views_restriction">
-Views left: ${code.views}
-</span>
-<span id="load_date">
+    <#if code.secret>
+        <span id="time_restriction">
+        Seconds left: ${code.getSecondsLeft()}
+        </span>
+        <span id="views_restriction">
+        Views left: ${code.views}
+        </span>
+    </#if>
+    <span id="load_date">
 ${code.date}
 </span>
-<pre id="code_snippet"><code>
+    <pre id="code_snippet"><code>
 ${code.code}
 </code></pre>
 <#else>
