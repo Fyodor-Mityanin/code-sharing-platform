@@ -4,6 +4,7 @@ import org.demo.codesharingplatform.businesslayer.CodeService;
 import org.demo.codesharingplatform.dtos.CodeDTO;
 import org.demo.codesharingplatform.dtos.mapper.CodeMapper;
 import org.demo.codesharingplatform.entity.Code;
+import org.demo.codesharingplatform.excepton.CodeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +29,27 @@ public class CodeController {
         this.codeMapper = codeMapper;
     }
 
+    @GetMapping("/code/new")
+    public String codeNew(Model model) {
+        return "new_code";
+    }
+
     @GetMapping("/code/{uuid}")
     public String code(@PathVariable UUID uuid, Model model) {
+        System.out.println("/code/{uuid}");
         Code code = codeService.findCodeById(uuid);
+        System.out.println("code={" + code);
         if (code == null) {
-            return "404";
+            throw new CodeNotFoundException();
         }
         boolean isAvailable = codeService.checkAvailability(code);
+        System.out.println("code available " + isAvailable);
         if (!isAvailable) {
-            return "404";
+            throw new CodeNotFoundException();
         }
         model.addAttribute("code", code);
         model.addAttribute("title", "Code");
+        System.out.println(model);
         return "code";
     }
 
@@ -75,9 +85,11 @@ public class CodeController {
         CodeDTO codeDTO = codeMapper.entityToDTO(code);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "application/json");
-        return ResponseEntity.ok()
+        var resp = ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(codeDTO);
+        System.out.println(resp);
+        return resp;
     }
 
     @PostMapping(value = "/api/code/new")
@@ -90,11 +102,4 @@ public class CodeController {
                 .headers(responseHeaders)
                 .body("{ \"id\": \"" + codeToSave.getId() + "\" }");
     }
-
-
-    @GetMapping("/code/new")
-    public String codeNew(Model model) {
-        return "new_code";
-    }
-
 }

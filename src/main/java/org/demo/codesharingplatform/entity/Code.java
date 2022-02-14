@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -29,7 +28,7 @@ public class Code {
     private String code;
 
     @Column(name = "time")
-    private Duration time = Duration.ZERO;
+    private int time = 0;
 
     @Column(name = "views")
     private int views = 0;
@@ -46,30 +45,12 @@ public class Code {
     public Code() {
     }
 
-    public Code(LocalDateTime date, String code) {
-        this.date = date;
-        this.code = code;
-    }
-
-    public Code(LocalDateTime date, String code, Duration time, int views) {
+    public Code(LocalDateTime date, String code, int time, int views) {
         this.date = date;
         this.code = code;
         this.time = time;
         this.views = views;
     }
-
-    public Code(LocalDateTime date, String code, Duration time) {
-        this.date = date;
-        this.code = code;
-        this.time = time;
-    }
-
-    public Code(LocalDateTime date, String code, int views) {
-        this.date = date;
-        this.code = code;
-        this.views = views;
-    }
-
 
     public UUID getId() {
         return id;
@@ -91,11 +72,11 @@ public class Code {
         this.code = code;
     }
 
-    public Duration getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(Duration time) {
+    public void setTime(int time) {
         this.time = time;
     }
 
@@ -127,12 +108,8 @@ public class Code {
         this.viewRestrict = setViewRestrict;
     }
 
-    public LocalDateTime getEstimateTime() {
-        return getDate().plusSeconds(getTime().getSeconds());
-    }
-
-    public long getSecondsLeft() {
-        long secondsLeft = ChronoUnit.SECONDS.between(LocalDateTime.now(), getDate().plusSeconds(getTime().getSeconds()));
-        return secondsLeft < 0 ? 0 : secondsLeft;
+    public int getSecondsLeft() {
+        int secondsLeft = (int) ChronoUnit.SECONDS.between(LocalDateTime.now(), getDate().plusSeconds(time));
+        return Math.max(secondsLeft, 0);
     }
 }

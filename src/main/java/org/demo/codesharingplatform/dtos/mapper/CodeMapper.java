@@ -15,7 +15,7 @@ public class CodeMapper {
             return new CodeDTO(
                     code.getDate().toString(),
                     code.getCode(),
-                    (int) code.getSecondsLeft(),
+                    code.getSecondsLeft(),
                     code.getViews()
             );
         } else {

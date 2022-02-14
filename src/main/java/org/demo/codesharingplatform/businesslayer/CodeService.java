@@ -42,12 +42,16 @@ public class CodeService {
     }
 
     public boolean checkAvailability(Code code) {
+        System.out.println(code.getViews());
+        System.out.println(code.getTime());
+        System.out.println(code.isViewRestrict());
+        System.out.println(code.isTimeRestrict());
         if (code.isViewRestrict()) {
-            decrementViews(code);
             if (code.getViews() <= 0) {
                 delete(code);
                 return false;
             }
+            decrementViews(code);
         }
         if (code.isTimeRestrict()) {
             if (code.getSecondsLeft() <= 0) {
@@ -62,7 +66,7 @@ public class CodeService {
         if (code.getViews() > 0) {
             code.setViewRestrict(true);
         }
-        if (code.getTime().getSeconds() > 0) {
+        if (code.getTime() > 0) {
             code.setTimeRestrict(true);
         }
     }
