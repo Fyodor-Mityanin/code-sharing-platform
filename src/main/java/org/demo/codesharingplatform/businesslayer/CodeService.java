@@ -42,9 +42,15 @@ public class CodeService {
     }
 
     public boolean checkAvailability(Code code) {
-        if (code.isSecret()) {
+        if (code.isViewRestrict()) {
             decrementViews(code);
-            if (code.getEstimateTime().isAfter(LocalDateTime.now()) && code.getViews() <= 0) {
+            if (code.getViews() <= 0) {
+                delete(code);
+                return false;
+            }
+        }
+        if (code.isTimeRestrict()) {
+            if (code.getSecondsLeft() <= 0) {
                 delete(code);
                 return false;
             }
@@ -53,8 +59,11 @@ public class CodeService {
     }
 
     public void setIsSecret(Code code) {
-        if (code.getViews() > 0 || code.getTime().getSeconds() > 0) {
-            code.setSecret(true);
+        if (code.getViews() > 0) {
+            code.setViewRestrict(true);
+        }
+        if (code.getTime().getSeconds() > 0) {
+            code.setTimeRestrict(true);
         }
     }
 }

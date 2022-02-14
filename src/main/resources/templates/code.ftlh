@@ -13,10 +13,12 @@
 </head>
 <body>
 <#if code??>
-    <#if code.secret>
+    <#if code.timeRestrict>
         <span id="time_restriction">
         Seconds left: ${code.getSecondsLeft()}
         </span>
+    </#if>
+    <#if code.viewRestrict>
         <span id="views_restriction">
         Views left: ${code.views}
         </span>

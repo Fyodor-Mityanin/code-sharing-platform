@@ -11,7 +11,7 @@ import java.util.List;
 public class CodeMapper {
 
     public CodeDTO entityToDTO (Code code) {
-        if (code.isSecret()) {
+        if (code.isViewRestrict() || code.isTimeRestrict()) {
             return new CodeDTO(
                     code.getDate().toString(),
                     code.getCode(),
@@ -36,5 +36,4 @@ public class CodeMapper {
         }
         return codeDTOs;
     }
-
 }

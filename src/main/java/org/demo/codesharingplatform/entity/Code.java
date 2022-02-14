@@ -35,8 +35,12 @@ public class Code {
     private int views = 0;
 
     @JsonIgnore
-    @Column(name = "is_secret")
-    private boolean secret = false;
+    @Column(name = "is_time_restrict")
+    private boolean timeRestrict = false;
+
+    @JsonIgnore
+    @Column(name = "is_view_restrict")
+    private boolean viewRestrict = false;
 
 
     public Code() {
@@ -107,12 +111,20 @@ public class Code {
         this.views--;
     }
 
-    public boolean isSecret() {
-        return secret;
+    public boolean isTimeRestrict() {
+        return timeRestrict;
     }
 
-    public void setSecret(boolean secret) {
-        this.secret = secret;
+    public void setTimeRestrict(boolean timeRestrict) {
+        this.timeRestrict = timeRestrict;
+    }
+
+    public boolean isViewRestrict() {
+        return viewRestrict;
+    }
+
+    public void setViewRestrict(boolean setViewRestrict) {
+        this.viewRestrict = setViewRestrict;
     }
 
     public LocalDateTime getEstimateTime() {
@@ -120,6 +132,7 @@ public class Code {
     }
 
     public long getSecondsLeft() {
-        return ChronoUnit.SECONDS.between(LocalDateTime.now(), getDate().plusSeconds(getTime().getSeconds()));
+        long secondsLeft = ChronoUnit.SECONDS.between(LocalDateTime.now(), getDate().plusSeconds(getTime().getSeconds()));
+        return secondsLeft < 0 ? 0 : secondsLeft;
     }
 }
