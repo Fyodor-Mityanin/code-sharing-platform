@@ -42,10 +42,6 @@ public class CodeService {
     }
 
     public boolean checkAvailability(Code code) {
-        System.out.println(code.getViews());
-        System.out.println(code.getTime());
-        System.out.println(code.isViewRestrict());
-        System.out.println(code.isTimeRestrict());
         if (code.isViewRestrict()) {
             if (code.getViews() <= 0) {
                 delete(code);
